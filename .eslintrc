@@ -2,17 +2,17 @@
     "env": {
         "browser": true,
         "es2021": true,
-        "node": true,
+        "node": true
     },
     "extends": ["airbnb-base"],
     "parserOptions": {
-        "ecmaVersion": "latest",
+        "ecmaVersion": "latest"
     },
     "rules": {
         "quotes": ["error", "double"],
         "semi": ["error", "always"],
         "indent": ["error", 4],
         "linebreak-style": ["error", "unix"],
-        "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+        "no-underscore-dangle": ["error", { "allow": ["_id"] }]
     }
 }
