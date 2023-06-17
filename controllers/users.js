@@ -16,7 +16,13 @@ const getUserById = (req, res) => {
             }
             return res.status(200).send(user);
         })
-        .catch(() => res.status(500).send({ message: "Server Error" }));
+        .catch((error) => {
+            if (error.name === "CardError") {
+                res.status(400).send({ message: "false ID" });
+            } else {
+                res.status(500).send({ message: "Server Error" });
+            }
+        });
 };
 
 const createUser = (req, res) => {
