@@ -48,10 +48,17 @@ const addLikeCard = (req, res) => {
         { new: true },
     )
         .then((card) => {
-            res.send(card);
+            if (!card) {
+                return res.status(404).send({ message: "Card not found" });
+            }
+            return res.send(card);
         })
-        .catch(() => {
-            res.status(500).send({ message: "Server Error" });
+        .catch((error) => {
+            if (error.name === "CastError") {
+                res.status(400).send({ message: "false ID" });
+            } else {
+                res.status(500).send({ message: "Server Error" });
+            }
         });
 };
 
@@ -61,10 +68,17 @@ const deleteLikeCard = (req, res) => Card.findByIdAndUpdate(
     { new: true },
 )
     .then((card) => {
-        res.send(card);
+        if (!card) {
+            return res.status(404).send({ message: "Card not found" });
+        }
+        return res.send(card);
     })
-    .catch(() => {
-        res.status(500).send({ message: "Server Error" });
+    .catch((error) => {
+        if (error.name === "CastError") {
+            res.status(400).send({ message: "false ID" });
+        } else {
+            res.status(500).send({ message: "Server Error" });
+        }
     });
 
 module.exports = {
