@@ -17,8 +17,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 
-app.use(routes);
-
 app.use((req, res, next) => {
     req.user = {
         _id: "648a200185640189dbfd4ece", // вставьте сюда _id созданного в предыдущем пункте пользователя
@@ -26,6 +24,8 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.use(routes);
 
 app.listen(PORT, () => {
     console.log(`Ser running ${PORT}`);

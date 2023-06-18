@@ -8,8 +8,10 @@ const getUsers = (req, res) => User.find({})
 
 const getUserById = (req, res) => {
     const { id } = req.params;
-
     return User.findById(id)
+        .orFail(() => {
+            throw new Error();
+        })
         .then((user) => {
             if (!user) {
                 return res.status(404).send({ message: "User not found" });
@@ -17,7 +19,7 @@ const getUserById = (req, res) => {
             return res.status(200).send(user);
         })
         .catch((error) => {
-            if (error.name === "CardError") {
+            if (error.name === "CastError") {
                 res.status(400).send({ message: "false ID" });
             } else {
                 res.status(500).send({ message: "Server Error" });
@@ -44,15 +46,22 @@ const createUser = (req, res) => {
 
 const updateUser = (req, res) => {
     const { name, about } = req.body;
-
-    return User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    if (!name || !about) {
+        res.status(400).send({
+            message: "Переданы некорректные данные",
+        });
+        return;
+    }
+    User.findByIdAndUpdate(
+        req.user._id,
+        { name, about },
+        { new: true, runValidators: true },
+    )
         .then((newUser) => res.status(200).send(newUser))
         .catch((err) => {
-            if (err.name === "ValidationError") {
+            if (err.name === "ValidationError" || err.name === "CastError") {
                 return res.status(400).send({
-                    message: `${Object.values(err.errors)
-                        .map((error) => error.message)
-                        .join(", ")}`,
+                    message: "Переданы некорректные данные",
                 });
             }
             return res.status(500).send({ message: "Server Error" });
