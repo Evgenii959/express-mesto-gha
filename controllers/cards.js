@@ -41,21 +41,31 @@ const deleteCard = (req, res) => {
         });
 };
 
-const addLikeCard = (req, res) => Card.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
-).catch(() => {
-    res.status(500).send({ message: "Server Error" });
-});
+const addLikeCard = (req, res) => {
+    Card.findByIdAndUpdate(
+        req.params.id,
+        { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+        { new: true },
+    )
+        .then((card) => {
+            res.send(card);
+        })
+        .catch(() => {
+            res.status(500).send({ message: "Server Error" });
+        });
+};
 
 const deleteLikeCard = (req, res) => Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
-).catch(() => {
-    res.status(500).send({ message: "Server Error" });
-});
+)
+    .then((card) => {
+        res.send(card);
+    })
+    .catch(() => {
+        res.status(500).send({ message: "Server Error" });
+    });
 
 module.exports = {
     getCards,
