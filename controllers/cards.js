@@ -36,8 +36,12 @@ const deleteCard = (req, res) => {
             }
             res.send(card);
         })
-        .catch(() => {
-            res.status(500).send({ message: "Server Error" });
+        .catch((error) => {
+            if (error.name === "CastError") {
+                res.status(400).send({ message: "false ID" });
+            } else {
+                res.status(500).send({ message: "Server Error" });
+            }
         });
 };
 

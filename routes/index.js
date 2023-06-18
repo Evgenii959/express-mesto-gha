@@ -5,7 +5,7 @@ const cardRoutes = require("./cards");
 router.use(userRoutes);
 router.use(cardRoutes);
 router.use((req, res) => {
-    res.statusCode(404).send({ message: "Неверный адрес" });
+    res.status(404).send({ message: "Неверный адрес" });
 });
 
 module.exports = router;
