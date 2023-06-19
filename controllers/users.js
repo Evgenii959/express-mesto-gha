@@ -55,14 +55,6 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   const { name, about } = req.body;
 
-  if (!name || !about) {
-    res.status(400).send({
-      message: 'Переданы некорректные данные',
-    });
-
-    return;
-  }
-
   User.findByIdAndUpdate(
     req.user._id,
 
