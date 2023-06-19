@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use((req, next) => {
+app.use((req, res, next) => {
   req.user = {
     _id: '648a200185640189dbfd4ece', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
