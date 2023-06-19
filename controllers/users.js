@@ -66,7 +66,7 @@ const updateUser = (req, res) => {
     .then((newUser) => res.status(200).send(newUser))
 
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({
           message: 'Переданы некорректные данные',
         });

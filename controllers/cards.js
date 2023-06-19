@@ -8,10 +8,7 @@ const getCards = (req, res) => Card.find({})
 
 const createCards = (req, res) => {
   const { name, link } = req.body;
-  if (!name || !link) {
-    res.status(400).send({ message: 'Card not found' });
-    return;
-  }
+
   Card.create({ name, link, owner: req.user._id })
     .then((newCard) => res.status(201).send(newCard))
     .catch((err) => {
