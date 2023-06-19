@@ -43,7 +43,12 @@ const createUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-
+  if (!name || !about) {
+    res.status(400).send({
+      message: 'Переданы некорректные данные',
+    });
+    return;
+  }
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
@@ -51,7 +56,7 @@ const updateUser = (req, res) => {
   )
     .then((newUser) => res.status(200).send(newUser))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({
           message: 'Переданы некорректные данные',
         });
