@@ -1,9 +1,10 @@
 const Card = require('../models/card');
+const { serverError, cardNotFound, falseId } = require('./errors');
 
 const getCards = (req, res) => Card.find({})
   .then((cards) => res.status(200).send(cards))
   .catch(() => {
-    res.status(500).send({ message: 'Server Error' });
+    res.status(500).send({ message: serverError });
   });
 
 const createCards = (req, res) => {
@@ -19,7 +20,7 @@ const createCards = (req, res) => {
             .join(', ')}`,
         });
       }
-      return res.status(500).send({ message: 'Server Error' });
+      return res.status(500).send({ message: serverError });
     });
 };
 
@@ -28,16 +29,16 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(id)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Card not found' });
+        res.status(404).send({ message: cardNotFound });
         return;
       }
       res.send(card);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'false ID' });
+        res.status(400).send({ message: falseId });
       } else {
-        res.status(500).send({ message: 'Server Error' });
+        res.status(500).send({ message: serverError });
       }
     });
 };
@@ -50,15 +51,15 @@ const addLikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Card not found' });
+        return res.status(404).send({ message: cardNotFound });
       }
       return res.send(card);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'false ID' });
+        res.status(400).send({ message: falseId });
       } else {
-        res.status(500).send({ message: 'Server Error' });
+        res.status(500).send({ message: serverError });
       }
     });
 };
@@ -70,15 +71,15 @@ const deleteLikeCard = (req, res) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (!card) {
-      return res.status(404).send({ message: 'Card not found' });
+      return res.status(404).send({ message: cardNotFound });
     }
     return res.send(card);
   })
   .catch((error) => {
     if (error.name === 'CastError') {
-      res.status(400).send({ message: 'false ID' });
+      res.status(400).send({ message: falseId });
     } else {
-      res.status(500).send({ message: 'Server Error' });
+      res.status(500).send({ message: serverError });
     }
   });
 
