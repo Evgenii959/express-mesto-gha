@@ -4,12 +4,17 @@ const {
   userNotFound,
   falseId,
   falseData,
+  serverOk,
+  createdOk,
+  badRequest,
+  internalServerError,
+  notFound,
 } = require('./errors');
 
 const getUsers = (req, res) => User.find({})
-  .then((users) => res.status(200).send(users))
+  .then((users) => res.status(serverOk).send(users))
   .catch(() => {
-    res.status(500).send({ message: serverError });
+    res.status(internalServerError).send({ message: serverError });
   });
 
 const getUserById = (req, res) => {
@@ -18,15 +23,15 @@ const getUserById = (req, res) => {
   return User.findById(id)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: userNotFound });
+        return res.status(notFound).send({ message: userNotFound });
       }
-      return res.status(200).send(user);
+      return res.status(serverOk).send(user);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: falseId });
+        res.status(badRequest).send({ message: falseId });
       } else {
-        res.status(500).send({ message: serverError });
+        res.status(internalServerError).send({ message: serverError });
       }
     });
 };
@@ -35,16 +40,16 @@ const createUser = (req, res) => {
   const newUserData = req.body;
 
   return User.create(newUserData)
-    .then((newUser) => res.status(201).send(newUser))
+    .then((newUser) => res.status(createdOk).send(newUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
+        return res.status(badRequest).send({
           message: `${Object.values(err.errors)
             .map((error) => error.message)
             .join(', ')}`,
         });
       }
-      return res.status(500).send({ message: serverError });
+      return res.status(internalServerError).send({ message: serverError });
     });
 };
 
@@ -56,14 +61,14 @@ const updateUser = (req, res) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((newUser) => res.status(200).send(newUser))
+    .then((newUser) => res.status(serverOk).send(newUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
+        return res.status(badRequest).send({
           message: falseData,
         });
       }
-      return res.status(500).send({ message: serverError });
+      return res.status(internalServerError).send({ message: serverError });
     });
 };
 
@@ -75,16 +80,16 @@ const updateAvatarUser = (req, res) => {
     { avatar },
     { new: true, runValidators: true },
   )
-    .then((newUser) => res.status(200).send(newUser))
+    .then((newUser) => res.status(serverOk).send(newUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
+        return res.status(badRequest).send({
           message: `${Object.values(err.errors)
             .map((error) => error.message)
             .join(', ')}`,
         });
       }
-      return res.status(500).send({ message: serverError });
+      return res.status(internalServerError).send({ message: serverError });
     });
 };
 
