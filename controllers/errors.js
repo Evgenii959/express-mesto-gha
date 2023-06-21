@@ -1,25 +1,21 @@
-const serverError = 'Server Error';
-const userNotFound = 'User not found';
-const falseId = 'false ID';
-const falseData = 'Переданы некорректные данные';
-const cardNotFound = 'Card not found';
-const falseAdress = 'Неверный адрес';
-const serverOk = 200;
-const createdOk = 201;
-const badRequest = 400;
-const internalServerError = 500;
-const notFound = 404;
+const codeMessage = {
+  serverError: 'Server Error',
+  userNotFound: 'User not found',
+  falseId: 'false ID',
+  falseData: 'Переданы некорректные данные',
+  cardNotFound: 'Card not found',
+  falseAdress: 'Неверный адрес',
+};
+
+const ERROR_CODES = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  INTERNAL_SERVER_ERROR: 500,
+  NOT_FOUND: 404,
+};
 
 module.exports = {
-  serverError,
-  userNotFound,
-  falseId,
-  falseData,
-  cardNotFound,
-  falseAdress,
-  serverOk,
-  createdOk,
-  badRequest,
-  internalServerError,
-  notFound,
+  codeMessage,
+  ERROR_CODES,
 };
