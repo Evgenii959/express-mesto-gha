@@ -1,4 +1,5 @@
 const codeMessage = {
+  succes: 'Успешная авторизация',
   serverError: 'Server Error',
   userNotFound: 'User not found',
   falseId: 'false ID',
