@@ -38,7 +38,7 @@ const getUserById = (req, res) => {
     });
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const {
       name, about, avatar, password, email,
@@ -51,7 +51,9 @@ const createUser = async (req, res) => {
       password: hashPassword,
       email,
     });
-
+    if (!user) {
+      throw new Error404('Пользователь не создан');
+    }
     res.status(ERROR_CODES.CREATED).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -62,9 +64,7 @@ const createUser = async (req, res) => {
       });
       return;
     }
-    res
-      .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-      .send({ message: codeMessage.serverError });
+    next(err);
   }
 };
 
