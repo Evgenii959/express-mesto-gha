@@ -23,7 +23,7 @@ const cardValidId = {
 };
 
 const userValid = {
-  [Segments.BODY]: Joi.object().keys({
+  [Segments.BODY]: Joi.object({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
@@ -32,7 +32,7 @@ const userValid = {
       .required()
       .custom((value, helpers) => {
         if (!validUrl.isWebUri(value)) {
-          return helpers.error("Ошибка");
+          return helpers.error('Ошибка');
         }
         return value;
       }),
