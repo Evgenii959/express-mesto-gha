@@ -32,7 +32,7 @@ const userValid = {
       .required()
       .custom((value, helpers) => {
         if (!validUrl.isWebUri(value)) {
-          return helpers.error('Ошибка');
+          return helpers.error("Ошибка");
         }
         return value;
       }),
