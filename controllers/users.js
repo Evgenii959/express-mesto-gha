@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Error401 = require('../errors/error401');
 const Error404 = require('../errors/error404');
+const Error409 = require('../errors/error409');
 const { codeMessage, ERROR_CODES } = require('../errors/errors');
 
 const getUsers = (req, res) => User.find({})
@@ -54,14 +55,14 @@ const createUser = async (req, res, next) => {
     if (!user) {
       throw new Error404('Пользователь не создан');
     }
-    res.status(ERROR_CODES.CREATED).send(user);
+    res
+      .status(ERROR_CODES.CREATED)
+      .send({
+        name, about, avatar, email,
+      });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(ERROR_CODES.BAD_REQUEST).send({
-        message: `${Object.values(err.errors)
-          .map((error) => error.message)
-          .join(', ')}`,
-      });
+      next(new Error409('Такой email уже существует'));
       return;
     }
     next(err);

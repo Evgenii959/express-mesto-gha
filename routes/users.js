@@ -20,13 +20,13 @@ const {
 
 router.get('/users', authMiddle, getUsers);
 
+router.get('/users/me', authMiddle, getCurentUser);
+
 router.get('/users/:id', authMiddle, celebrate(userValidId), getUserById);
 
 router.post('/signup', celebrate(userValid), createUser);
 
 router.patch('/users/me', authMiddle, celebrate(userValidUpdate), updateUser);
-
-router.get('/users/me', authMiddle, getCurentUser);
 
 router.patch(
   '/users/me/avatar',

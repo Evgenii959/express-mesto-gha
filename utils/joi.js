@@ -26,7 +26,7 @@ const cardValid = {
 
 const cardValidId = {
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().required().hex(),
+    id: Joi.string().required().length(24).hex(),
   }),
 };
 
@@ -48,7 +48,7 @@ const userValid = {
 
 const userValidId = {
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().required().hex(),
+    id: Joi.string().required().length(24).hex(),
   }),
 };
 
