@@ -1,6 +1,12 @@
 const router = require('express').Router();
 const { celebrate } = require('celebrate');
-const { userValid, userValidUpdate } = require('../utils/joi');
+const {
+  userValid,
+  userValidUpdate,
+  userValidLogin,
+  userValidAvatar,
+  userValidId,
+} = require('../utils/joi');
 const authMiddle = require('../middlewares/auth');
 const {
   getUsers,
@@ -14,7 +20,7 @@ const {
 
 router.get('/users', authMiddle, getUsers);
 
-router.get('/users/:id', authMiddle, celebrate(userValid), getUserById);
+router.get('/users/:id', authMiddle, celebrate(userValidId), getUserById);
 
 router.post('/signup', celebrate(userValid), createUser);
 
@@ -22,8 +28,13 @@ router.patch('/users/me', authMiddle, celebrate(userValidUpdate), updateUser);
 
 router.get('/users/me', authMiddle, getCurentUser);
 
-router.patch('/users/me/avatar', authMiddle, celebrate(userValidUpdate), updateAvatarUser);
+router.patch(
+  '/users/me/avatar',
+  authMiddle,
+  celebrate(userValidAvatar),
+  updateAvatarUser,
+);
 
-router.post('/signin', celebrate(userValid), login);
+router.post('/signin', celebrate(userValidLogin), login);
 
 module.exports = router;

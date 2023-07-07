@@ -1,6 +1,13 @@
 const { Segments, Joi } = require('celebrate');
 const validUrl = require('valid-url');
 
+const userValidLogin = {
+  [Segments.BODY]: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+};
+
 const cardValid = {
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required().min(2).max(30)
@@ -19,18 +26,17 @@ const cardValid = {
 
 const cardValidId = {
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().hex(),
+    id: Joi.string().required().hex(),
   }),
 };
 
 const userValid = {
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     avatar: Joi.string()
-      .required()
       .custom((value, helpers) => {
         if (!validUrl.isWebUri(value)) {
           return helpers.error('Ошибка');
@@ -40,10 +46,21 @@ const userValid = {
   }),
 };
 
+const userValidId = {
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.string().required().hex(),
+  }),
+};
+
 const userValidUpdate = {
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
+  }),
+};
+
+const userValidAvatar = {
+  [Segments.BODY]: Joi.object().keys({
     avatar: Joi.string()
       .required()
       .custom((value, helpers) => {
@@ -56,5 +73,11 @@ const userValidUpdate = {
 };
 
 module.exports = {
-  cardValid, cardValidId, userValid, userValidUpdate,
+  cardValid,
+  cardValidId,
+  userValid,
+  userValidUpdate,
+  userValidLogin,
+  userValidAvatar,
+  userValidId,
 };
