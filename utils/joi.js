@@ -3,7 +3,8 @@ const validUrl = require('valid-url');
 
 const cardValid = {
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(30)
+      .messages({ 'string.empty': 'Строка не должна быть пустой', 'string.min': 'минимальное количество символов 2' }),
     link: Joi.string().required().custom((value, helpers) => {
       if (!validUrl.isWebUri(value)) {
         return helpers.error('Ошибка');
@@ -23,7 +24,7 @@ const cardValidId = {
 };
 
 const userValid = {
-  [Segments.BODY]: Joi.object({
+  [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
