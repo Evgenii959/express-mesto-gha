@@ -18,6 +18,6 @@ router.delete('/cards/:id', authMiddle, celebrate(cardValidId), deleteCard);
 
 router.put('/cards/:id/likes', authMiddle, celebrate(cardValidId), addLikeCard);
 
-router.delete('/cards/:id/likes', authMiddle, deleteLikeCard);
+router.delete('/cards/:id/likes', authMiddle, celebrate(cardValidId), deleteLikeCard);
 
 module.exports = router;

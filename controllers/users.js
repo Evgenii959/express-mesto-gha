@@ -61,7 +61,7 @@ const createUser = async (req, res, next) => {
         name, about, avatar, email,
       });
   } catch (err) {
-    if (err.name === 'ValidationError') {
+    if (err.code === 11000) {
       next(new Error409('Такой email уже существует'));
       return;
     }
