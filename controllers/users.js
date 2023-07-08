@@ -26,7 +26,7 @@ const getUserById = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        next(new Error404('false ID'));
+        next(new Error400('false ID'));
       } else {
         next(errorHandler('Server Error'));
       }

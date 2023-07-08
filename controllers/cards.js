@@ -1,7 +1,8 @@
 const Card = require('../models/card');
-const { codeMessage, ERROR_CODES } = require('../errors/errors');
-const Error404 = require('../errors/error404');
+const { ERROR_CODES } = require('../errors/errors');
+const Error400 = require('../errors/error400');
 const Error403 = require('../errors/error403');
+const Error404 = require('../errors/error404');
 
 const getCards = (req, res, next) => Card.find({})
   .then((cards) => res.status(ERROR_CODES.OK).send(cards))
@@ -20,11 +21,7 @@ const createCards = async (req, res, next) => {
     res.status(ERROR_CODES.CREATED).send(newCard);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(ERROR_CODES.BAD_REQUEST).send({
-        message: `${Object.values(err.errors)
-          .map((error) => error.message)
-          .join(', ')}`,
-      });
+      throw new Error400('ValidationError');
     }
     next(err);
   }
@@ -48,9 +45,7 @@ const deleteCard = async (req, res, next) => {
     res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: codeMessage.falseId });
+      throw new Error400('false ID');
     } else {
       next(error);
     }
@@ -65,17 +60,13 @@ const addLikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: codeMessage.cardNotFound });
+        next(new Error404('Карточка не найдена'));
       }
       return res.send(card);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: codeMessage.falseId });
+        next(new Error400('false ID'));
       } else {
         next(error);
       }
@@ -89,17 +80,13 @@ const deleteLikeCard = (req, res, next) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (!card) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: codeMessage.cardNotFound });
+      next(new Error404('Карточка не найдена'));
     }
     return res.send(card);
   })
   .catch((error) => {
     if (error.name === 'CastError') {
-      res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: codeMessage.falseId });
+      next(new Error400('false ID'));
     } else {
       next(error);
     }
