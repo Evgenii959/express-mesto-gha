@@ -36,7 +36,7 @@ const cardValid = {
       }),
   }),
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().hex().messages({
+    id: Joi.string().hex().length(24).messages({
       'string.empty': 'Строка не должна быть пустой',
       'string.hex': 'Должно содержать 16 символов',
     }),

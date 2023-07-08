@@ -5,13 +5,12 @@ const Error401 = require('../errors/error401');
 const Error404 = require('../errors/error404');
 const Error409 = require('../errors/error409');
 const { codeMessage, ERROR_CODES } = require('../errors/errors');
+const { errorHandler } = require('../middlewares/errorHandler');
 
-const getUsers = (req, res) => User.find({})
+const getUsers = (req, res, next) => User.find({})
   .then((users) => res.status(ERROR_CODES.OK).send(users))
   .catch(() => {
-    res
-      .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-      .send({ message: codeMessage.serverError });
+    next(errorHandler('Server Error'));
   });
 
 const getUserById = (req, res) => {
