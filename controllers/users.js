@@ -20,7 +20,7 @@ const getUserById = (req, res, next) => {
   return User.findById(id)
     .then((user) => {
       if (!user) {
-        next(new Error404('User not found'));
+        return next(new Error404('User not found'));
       }
       return res.status(ERROR_CODES.OK).send(user);
     })

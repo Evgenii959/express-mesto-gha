@@ -60,7 +60,7 @@ const addLikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        next(new Error404('Карточка не найдена'));
+        return next(new Error404('Карточка не найдена'));
       }
       return res.send(card);
     })
@@ -80,7 +80,7 @@ const deleteLikeCard = (req, res, next) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (!card) {
-      next(new Error404('Карточка не найдена'));
+      return next(new Error404('Карточка не найдена'));
     }
     return res.send(card);
   })
