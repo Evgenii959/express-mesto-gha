@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Error400 = require('../errors/error400');
 const Error401 = require('../errors/error401');
 const Error404 = require('../errors/error404');
 const Error409 = require('../errors/error409');
@@ -13,27 +14,21 @@ const getUsers = (req, res, next) => User.find({})
     next(errorHandler('Server Error'));
   });
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   const { id } = req.params;
 
   return User.findById(id)
     .then((user) => {
       if (!user) {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: codeMessage.userNotFound });
+        next(new Error404('User not found'));
       }
       return res.status(ERROR_CODES.OK).send(user);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: codeMessage.falseId });
+        throw new Error404('false ID');
       } else {
-        res
-          .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-          .send({ message: codeMessage.serverError });
+        next(errorHandler('Server Error'));
       }
     });
 };
@@ -52,7 +47,8 @@ const createUser = async (req, res, next) => {
       email,
     });
     if (!user) {
-      throw new Error404('Пользователь не создан');
+      next(new Error404('Пользователь не создан'));
+      return;
     }
     res
       .status(ERROR_CODES.CREATED)
@@ -68,7 +64,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -79,17 +75,13 @@ const updateUser = (req, res) => {
     .then((newUser) => res.status(ERROR_CODES.OK).send(newUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: codeMessage.falseData,
-        });
+        next(new Error400('Переданы не корректные данные'));
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: codeMessage.serverError });
+      return next(errorHandler('Server Error'));
     });
 };
 
-const updateAvatarUser = (req, res) => {
+const updateAvatarUser = (req, res, next) => {
   const { avatar } = req.body;
 
   return User.findByIdAndUpdate(
@@ -100,15 +92,9 @@ const updateAvatarUser = (req, res) => {
     .then((newUser) => res.status(ERROR_CODES.OK).send(newUser))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((error) => error.message)
-            .join(', ')}`,
-        });
+        return next(new Error400('ValidationError'));
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: codeMessage.serverError });
+      return next(errorHandler('Server Error'));
     });
 };
 
