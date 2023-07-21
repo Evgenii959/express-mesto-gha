@@ -4,7 +4,8 @@ const Error401 = require('../errors/error401');
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    throw new Error401('Токен не найден');
+    next(new Error401('Токен не найден'));
+    return;
   }
   try {
     req.user = jwt.verify(token, 'asdcqwcqwcdqwcq');

@@ -16,12 +16,12 @@ const createCards = async (req, res, next) => {
 
     const newCard = await Card.create({ name, link, owner: req.user._id });
     if (!newCard) {
-      throw new Error404('Карточка не создана');
+      next(Error404('Карточка не создана'));
     }
     res.status(ERROR_CODES.CREATED).send(newCard);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      throw new Error400('ValidationError');
+      next(new Error400('ValidationError'));
     }
     next(err);
   }
@@ -34,18 +34,18 @@ const deleteCard = async (req, res, next) => {
     const card = await Card.findById(id);
 
     if (!card) {
-      throw new Error404('Нет карточки с таким id');
+      next(new Error404('Нет карточки с таким id'));
     }
 
     if (card.owner.toString() !== userId) {
-      throw new Error403('У вас нет прав');
+      next(new Error403('У вас нет прав'));
     }
 
     await Card.findByIdAndRemove(id);
     res.send(card);
   } catch (error) {
     if (error.name === 'CastError') {
-      throw new Error400('false ID');
+      next(new Error400('false ID'));
     } else {
       next(error);
     }
